@@ -17,9 +17,6 @@ import {
 } from './payload/subscription.query';
 import { OrderEnum, SortEnum } from './payload/common.query';
 
-const mongoose = require('mongoose');
-mongoose.set('debug', true);
-
 @Injectable()
 export class SubscriptionService {
   constructor(
