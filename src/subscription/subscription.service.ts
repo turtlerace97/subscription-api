@@ -56,7 +56,9 @@ export class SubscriptionService {
   }
 
   async findAll(query: SubscriptionsQuery): Promise<SubscriptionMapper[]> {
-    const filterQuery: FilterQuery<Subscription> = {};
+    const filterQuery: FilterQuery<Subscription> = {
+      canceled_date: null,
+    };
 
     if (query.startDate && query.endDate) {
       filterQuery.created_date = {
