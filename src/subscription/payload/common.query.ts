@@ -1,5 +1,14 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsMongoId, IsNumber, IsOptional, Min } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
+import { SubscriptionInterval } from './subscription.payload';
 
 export enum OrderEnum {
   CREATED_DATE = 'created_date',
@@ -50,4 +59,38 @@ export class OrderQuery {
   @IsOptional()
   @IsEnum(SortEnum)
   sort?: SortEnum = SortEnum.DESC;
+}
+
+export class SearchQuery {
+  @ApiPropertyOptional({
+    type: String,
+    description: '검색하고자 하는 고객 id',
+  })
+  @IsOptional()
+  @IsString()
+  customerId?: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    description: '구독 시작한 날짜 범위 검색 시작(UTC)',
+  })
+  @IsOptional()
+  @IsDate()
+  startDate?: Date;
+
+  @ApiPropertyOptional({
+    type: String,
+    description: '구독 시작한 날짜 범위 검색 끝(UTC)',
+  })
+  @IsOptional()
+  @IsDate()
+  endDate?: Date;
+
+  @ApiPropertyOptional({
+    enum: SubscriptionInterval,
+    description: '구독 인터벌 검색',
+  })
+  @IsOptional()
+  @IsEnum(SubscriptionInterval)
+  subscriptionInterval?: SubscriptionInterval;
 }

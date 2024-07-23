@@ -15,7 +15,7 @@ import {
   SubscriptionLongTermUsersQuery,
   SubscriptionsQuery,
 } from './payload/subscription.query';
-import { SortEnum } from './payload/common.query';
+import { OrderEnum, SortEnum } from './payload/common.query';
 
 const mongoose = require('mongoose');
 mongoose.set('debug', true);
@@ -61,9 +61,27 @@ export class SubscriptionService {
   async findAll(query: SubscriptionsQuery): Promise<SubscriptionMapper[]> {
     const filterQuery: FilterQuery<Subscription> = {};
 
+    if (query.startDate && query.endDate) {
+      filterQuery.created_date = {
+        $gte: new Date(query.startDate),
+        $lte: new Date(query.endDate),
+      };
+    }
+
+    if (query.customerId) {
+      filterQuery.customer_id = query.customerId;
+    }
+
+    if (query.subscriptionInterval) {
+      filterQuery.subscription_interval = query.subscriptionInterval;
+    }
+
+    const orderField = query.order || OrderEnum.CREATED_DATE;
+    const sortOrder = query.sort === SortEnum.DESC ? -1 : 1;
+
     const result = await this.findBy(
-      {},
-      { [query.order]: query.sort === SortEnum.DESC ? -1 : 1 },
+      filterQuery,
+      { [orderField]: sortOrder },
       query.limit,
       query.offset,
     );
